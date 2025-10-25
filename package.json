@@ -1,0 +1,27 @@
+{
+  "name": "htf25-team-188",
+  "version": "1.0.0",
+  "description": "In this Readme, you will find a guide on how to fork this Repository, add files to it, and make a pull request to contribute your changes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhinav-lucky/HTF25-Team-188.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abhinav-lucky/HTF25-Team-188/issues"
+  },
+  "homepage": "https://github.com/Abhinav-lucky/HTF25-Team-188#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2"
+  }
+}

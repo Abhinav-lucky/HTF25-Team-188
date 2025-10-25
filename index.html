@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- LOGIN PAGE -->
+  <div id="login-page" class="login-container">
+    <h1>Student Dashboard Login</h1>
+    <div class="login-box">
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD PAGE -->
+  <div id="dashboard-page" class="dashboard-container hidden">
+    <aside class="sidebar">
+      <h2>📚 Dashboard</h2>
+      <ul>
+        <li class="active">Overview</li>
+        <li>Subjects</li>
+        <li>Performance</li>
+        <li>Settings</li>
+      </ul>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </aside>
+
+    <main class="main-content">
+      <header>
+        <h1>Welcome, <span id="user-display"></span> 👋</h1>
+      </header>
+
+      <section class="stats">
+        <div class="card blue">GPA: <span id="gpa">0.0</span></div>
+        <div class="card green">Subjects: <span id="subjects">0</span></div>
+        <div class="card purple">Assignments: <span id="assignments">0</span></div>
+        <div class="card orange">Upcoming Exams: <span id="exams">0</span></div>
+      </section>
+
+      <section class="charts">
+        <canvas id="performanceChart"></canvas>
+      </section>
+
+      <section class="recent">
+        <h3>Recent Data Entries</h3>
+        <table id="data-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Marks</th>
+              <th>Deadline</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="add-section">
+        <h3>Add New Record</h3>
+        <input type="text" id="subject" placeholder="Subject" />
+        <input type="number" id="marks" placeholder="Marks" />
+        <input type="date" id="deadline" />
+        <button onclick="addRecord()">Add</button>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Simple Login Simulation
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (username === '' || password === '') {
+        alert('Please enter username and password.');
+        return;
+      }
+
+      // Simulated login (any input accepted)
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('dashboard-page').classList.remove('hidden');
+      document.getElementById('user-display').innerText = username;
+    }
+
+    function logout() {
+      document.getElementById('dashboard-page').classList.add('hidden');
+      document.getElementById('login-page').classList.remove('hidden');
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    // Data and Charts
+    let records = [];
+
+    function addRecord() {
+      const subject = document.getElementById('subject').value;
+      const marks = parseInt(document.getElementById('marks').value);
+      const deadline = document.getElementById('deadline').value;
+
+      if (!subject || !marks || !deadline) {
+        alert('Please fill all fields.');
+        return;
+      }
+
+      records.push({ subject, marks, deadline });
+      updateDashboard();
+    }
+
+    function updateDashboard() {
+      document.getElementById('subjects').innerText = records.length;
+      document.getElementById('assignments').innerText = records.length;
+      document.getElementById('exams').innerText = records.filter(r => r.marks < 50).length;
+
+      const gpa =
+        records.length > 0
+          ? (records.reduce((sum, r) => sum + r.marks, 0) / records.length / 10).toFixed(2)
+          : '0.0';
+      document.getElementById('gpa').innerText = gpa;
+
+      // Table
+      const tbody = document.querySelector('#data-table tbody');
+      tbody.innerHTML = '';
+      records.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${r.subject}</td><td>${r.marks}</td><td>${r.deadline}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      // Chart
+      const ctx = document.getElementById('performanceChart');
+      if (window.performanceChart) window.performanceChart.destroy();
+
+      window.performanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: records.map(r => r.subject),
+          datasets: [{
+            label: 'Marks',
+            data: records.map(r => r.marks),
+            backgroundColor: '#2b6cb0',
+          }]
+        },
+        options: {
+          scales: { y: { beginAtZero: true, max: 100 } }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+
